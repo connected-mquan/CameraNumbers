@@ -12,6 +12,7 @@
 		F444E9922076545900F3637D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F444E9902076545900F3637D /* Main.storyboard */; };
 		F444E9942076545B00F3637D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F444E9932076545B00F3637D /* Assets.xcassets */; };
 		F444E9972076545B00F3637D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F444E9952076545B00F3637D /* LaunchScreen.storyboard */; };
+		F444E99F2076741E00F3637D /* MNIST.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = F444E99E2076741E00F3637D /* MNIST.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		F444E9932076545B00F3637D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F444E9962076545B00F3637D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F444E9982076545B00F3637D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F444E99E2076741E00F3637D /* MNIST.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MNIST.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				F444E98C2076545900F3637D /* AppDelegate.swift */,
 				F444E98E2076545900F3637D /* ViewController.swift */,
+				F444E99E2076741E00F3637D /* MNIST.mlmodel */,
 				F444E9902076545900F3637D /* Main.storyboard */,
 				F444E9932076545B00F3637D /* Assets.xcassets */,
 				F444E9952076545B00F3637D /* LaunchScreen.storyboard */,
@@ -135,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F444E99F2076741E00F3637D /* MNIST.mlmodel in Sources */,
 				F444E98F2076545900F3637D /* ViewController.swift in Sources */,
 				F444E98D2076545900F3637D /* AppDelegate.swift in Sources */,
 			);
@@ -283,6 +287,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YL7Q499FV6;
 				INFOPLIST_FILE = CameraNumbers/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -301,6 +306,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YL7Q499FV6;
 				INFOPLIST_FILE = CameraNumbers/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
