@@ -12,6 +12,7 @@ import Vision
 import CoreML
 
 
+
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
   lazy var mlModel: VNCoreMLModel! = {
@@ -31,14 +32,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
   lazy var predictionLabel: UILabel = {
     let label = UILabel()
+    label.numberOfLines = 0
     return label
   }()
 
-  var predictedNumber = "" {
-    didSet {
-      predictionLabel.text = "Prediction: \(predictedNumber)"
-    }
-  }
+  var currentTextImageRequests: TextImageRequest? = nil
 
   var captureSession: AVCaptureSession? = nil
 
@@ -93,19 +91,24 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     self.captureSession = captureSession
   }
 
+  var lastTime: Double = 0
+
   func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    let currentTime = Date().timeIntervalSince1970
     guard let baseImage = ciImageFromSampleBuffer(sampleBuffer) else {
       return
     }
-    guard let grayScaleImage = grayScaleImage(baseImage) else {
-      return
-    }
+    cameraFeedView.image = UIImage(ciImage: baseImage)
 
-    guard let negativeGrayScaleImage = negativeImage(grayScaleImage) else {
+    guard currentTime > lastTime + 1 else {
       return
     }
-    cameraFeedView.image = UIImage(ciImage: negativeGrayScaleImage)
-    predictNumber(fromImage: negativeGrayScaleImage)
+    lastTime = currentTime
+    let textImageRequest = TextImageRequest(image: baseImage, mlModel: mlModel)
+    textImageRequest.predictNumbers { (numbers) in
+      self.predictionLabel.text = numbers.joined(separator: "\n")
+    }
+    currentTextImageRequests = textImageRequest
   }
 
   func ciImageFromSampleBuffer(_ sampleBuffer: CMSampleBuffer) -> CIImage? {
@@ -115,36 +118,4 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     let ciImage = CIImage(cvPixelBuffer: cvImage)
     return ciImage
   }
-
-  func grayScaleImage(_ inputImage: CIImage) -> CIImage? {
-    let grayScaleFilter = CIFilter(name: "CIPhotoEffectNoir")!
-    grayScaleFilter.setValue(inputImage, forKey: kCIInputImageKey)
-    let outputImage = grayScaleFilter.outputImage
-    return outputImage
-  }
-
-  func negativeImage(_ inputImage: CIImage) -> CIImage? {
-    let negativeFilter = CIFilter(name: "CIColorInvert")!
-    negativeFilter.setValue(inputImage, forKey: kCIInputImageKey)
-    let outputImage = negativeFilter.outputImage
-    return outputImage
-  }
-
-  func predictNumber(fromImage image: CIImage) {
-    let numberPredictionRequest = VNCoreMLRequest(model: self.mlModel, completionHandler: self.predictionRequestCompletionHandler)
-    let numberPredictionHandler = VNImageRequestHandler(ciImage: image, options: [:])
-    try? numberPredictionHandler.perform([numberPredictionRequest])
-  }
-
-  func predictionRequestCompletionHandler(request: VNRequest, error: Error?) {
-    guard error == nil, let results = request.results as? [VNClassificationObservation] else {
-      return
-    }
-
-    let topResult = results[0]
-    DispatchQueue.main.async { [weak self] in
-      self?.predictedNumber = topResult.identifier
-    }
-  }
-
 }

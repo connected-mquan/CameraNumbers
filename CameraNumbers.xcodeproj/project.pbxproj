@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F42957A02077DF6000786BAA /* TextImageRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429579F2077DF6000786BAA /* TextImageRequest.swift */; };
 		F444E98D2076545900F3637D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F444E98C2076545900F3637D /* AppDelegate.swift */; };
 		F444E98F2076545900F3637D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F444E98E2076545900F3637D /* ViewController.swift */; };
 		F444E9922076545900F3637D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F444E9902076545900F3637D /* Main.storyboard */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F429579F2077DF6000786BAA /* TextImageRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextImageRequest.swift; sourceTree = "<group>"; };
 		F444E9892076545900F3637D /* CameraNumbers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraNumbers.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F444E98C2076545900F3637D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F444E98E2076545900F3637D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			children = (
 				F444E98C2076545900F3637D /* AppDelegate.swift */,
 				F444E98E2076545900F3637D /* ViewController.swift */,
+				F429579F2077DF6000786BAA /* TextImageRequest.swift */,
 				F444E99E2076741E00F3637D /* MNIST.mlmodel */,
 				F444E9902076545900F3637D /* Main.storyboard */,
 				F444E9932076545B00F3637D /* Assets.xcassets */,
@@ -140,6 +143,7 @@
 			files = (
 				F444E99F2076741E00F3637D /* MNIST.mlmodel in Sources */,
 				F444E98F2076545900F3637D /* ViewController.swift in Sources */,
+				F42957A02077DF6000786BAA /* TextImageRequest.swift in Sources */,
 				F444E98D2076545900F3637D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
