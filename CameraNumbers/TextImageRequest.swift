@@ -8,7 +8,6 @@
 
 import UIKit
 import Vision
-import CoreML
 
 typealias ciImageFilter = (CIImage) -> CIImage?
 
@@ -49,6 +48,22 @@ class TextImageRequest {
     return outputImage
   }
 
+  static func thresholdImage(_ inputImage: CIImage) -> CIImage? {
+    let thresholdKernel = CIColorKernel(source:
+      "kernel vec4 thresholdFilter(__sample image, float threshold)" +
+        "{" +
+        "   float luma = dot(image.rgb, vec3(0.2126, 0.7152, 0.0722));" +
+
+        "   return vec4(step(threshold, luma));" +
+      "}"
+      )!
+    let extent = inputImage.extent
+    let arguments = [inputImage, 0.75] as [AnyObject]
+
+    return thresholdKernel.apply(extent: extent, arguments: arguments)
+  }
+
+
   func predictNumbers(_ completion: @escaping ([String]) -> Void) {
     self.completion = completion
     detectText(in: image)
@@ -67,24 +82,27 @@ class TextImageRequest {
         numbers.append([])
         for (j, characterBox) in (observation.characterBoxes ?? []).enumerated() {
           numbers[i].append("")
-          guard let filteredImage = self.filteredImage else {return}
-          let uiImage = UIImage(ciImage: filteredImage)
-          let minX = max(0, characterBox.bottomLeft.x)
-          let maxX = min(1, characterBox.bottomRight.x)
-          let minY = max(0, characterBox.topLeft.y)
-          let maxY = min(1, characterBox.bottomLeft.y)
-          let originX = minX// * uiImage.size.width
-          let originY = minY// * uiImage.size.width
-          let width = (maxX - minX)// * uiImage.size.width
-          let height = (maxY - minY)// * uiImage.size.width
-          guard let croppedImage = self.filteredImage?.cropped(to: CGRect(x: originX, y: originY, width: width, height: height)) else {return}
+          // Core Image coordinate system is different than UIKit. Origin is at the bottom left instead of top left.
+          let uiImage = UIImage(ciImage: image)
+          let minX = characterBox.bottomLeft.x
+          let maxX = characterBox.bottomRight.x
+          let minY = 1 - characterBox.topLeft.y
+          let maxY = 1 - characterBox.bottomLeft.y
+          let originX = minX * uiImage.size.width
+          let originY = minY * uiImage.size.height
+          let width = (maxX - minX) * uiImage.size.width
+          let height = (maxY - minY) * uiImage.size.height
+          let frame = CGRect(x: originX, y: originY, width: width, height: height)
+          let context = CIContext(options: nil)
+          var imageRef = context.createCGImage(self.filteredImage!, from: image.extent)!
+          imageRef = imageRef.cropping(to: frame)!
           let numberPredictionRequest = VNCoreMLRequest(model: self.mlModel) { (request: VNRequest, error: Error?) in
             guard let observations = request.results as? [VNClassificationObservation] else {
               return
             }
             numbers[i][j] = observations.first?.identifier ?? ""
           }
-          let numberPredictionHandler = VNImageRequestHandler(ciImage: croppedImage, options: [:])
+          let numberPredictionHandler = VNImageRequestHandler(ciImage: CIImage(cgImage: imageRef), options: [:])
           try? numberPredictionHandler.perform([numberPredictionRequest])
         }
       }
